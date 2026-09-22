@@ -79,23 +79,22 @@ main {
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-.hero {
-  text-align: center;
-  padding: 3.5rem 2rem;
-  background: var(--card-bg, #ffffff);
-  border-radius: var(--radius-lg);
-  border: 1px solid #e2e8f0;
-  margin-bottom: 2.5rem; /* Increased this to give more space */
-  box-shadow: var(--shadow-sm);
+.hero { 
+  text-align: center; 
+  padding: 3rem 2rem 3.5rem 2rem; /* Added extra bottom padding so buttons stay safely inside the box */
+  background: var(--card-bg); 
+  border-radius: 8px; 
+  border: 1px solid var(--border-color); 
+  margin-bottom: 2rem; 
 }
 
-.hero-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1.5rem;
-  margin-bottom: 2rem; /* This creates the necessary space above the feature cards */
-  flex-wrap: wrap;
+.hero-buttons { 
+  display: flex; 
+  gap: 1rem; 
+  justify-content: center; 
+  margin-top: 1.5rem; 
+  margin-bottom: 0; 
+  flex-wrap: wrap; 
 }
 
 .hero h1 { margin-bottom: 1rem; font-size: 2.2rem; }
