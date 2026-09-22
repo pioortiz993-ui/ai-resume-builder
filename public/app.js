@@ -1,4 +1,3 @@
-// Application State
 let state = {
   personal: { name: '', email: '', phone: '', address: '', linkedin: '', portfolio: '' },
   summary: '',
@@ -7,39 +6,41 @@ let state = {
   skills: ''
 };
 
-// Tab Navigation
 function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
   
-  document.getElementById(`tab-${tabName}`).classList.add('active');
-  event.target.classList.add('active');
+  const selectedTab = document.getElementById(`tab-${tabName}`);
+  if (selectedTab) selectedTab.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
 }
 
-// UI Feedback
 function showToast(message) {
   const toast = document.getElementById('status-toast');
   toast.innerText = message;
   toast.classList.remove('hidden');
 }
+
 function hideToast() {
   document.getElementById('status-toast').classList.add('hidden');
 }
 
-// Dynamic Resume Rendering
 function updatePreview() {
-  const template = document.getElementById('template-select').value;
+  const selectEl = document.getElementById('template-select');
+  const template = selectEl ? selectEl.value : 'modern';
   const preview = document.getElementById('resume-preview');
+  if (!preview) return;
+
   preview.className = `resume-sheet template-${template}`;
 
-  state.personal.name = document.getElementById('res-name').value || 'Peepps';
-  state.personal.email = document.getElementById('res-email').value || 'Peepps@example.com';
-  state.personal.phone = document.getElementById('res-phone').value || '+1 234 567 890';
-  state.personal.address = document.getElementById('res-address').value || 'City, Country';
-  state.personal.linkedin = document.getElementById('res-linkedin').value;
-  state.personal.portfolio = document.getElementById('res-portfolio').value;
-  state.summary = document.getElementById('res-summary').value;
-  state.skills = document.getElementById('res-skills').value;
+  state.personal.name = document.getElementById('res-name')?.value || 'John Doe';
+  state.personal.email = document.getElementById('res-email')?.value || 'john@example.com';
+  state.personal.phone = document.getElementById('res-phone')?.value || '+1 234 567 890';
+  state.personal.address = document.getElementById('res-address')?.value || 'City, Country';
+  state.personal.linkedin = document.getElementById('res-linkedin')?.value || '';
+  state.personal.portfolio = document.getElementById('res-portfolio')?.value || '';
+  state.summary = document.getElementById('res-summary')?.value || '';
+  state.skills = document.getElementById('res-skills')?.value || '';
 
   let html = `
     <h1>${state.personal.name}</h1>
@@ -79,7 +80,6 @@ function updatePreview() {
   preview.innerHTML = html;
 }
 
-// Add Dynamic Form Elements
 function addExperience() {
   const id = Date.now();
   state.experiences.push({ id, role: '', company: '', dates: '', desc: '' });
@@ -88,10 +88,11 @@ function addExperience() {
 
 function renderExperiences() {
   const container = document.getElementById('experience-list');
+  if (!container) return;
   container.innerHTML = '';
   state.experiences.forEach((exp, idx) => {
     container.innerHTML += `
-      <div style="border:1px dashed #ccc; padding:0.5rem; margin-bottom:0.5rem;">
+      <div style="border:1px dashed #cbd5e1; padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
         <input type="text" placeholder="Job Title" value="${exp.role}" oninput="state.experiences[${idx}].role=this.value; updatePreview()">
         <input type="text" placeholder="Company" value="${exp.company}" oninput="state.experiences[${idx}].company=this.value; updatePreview()">
         <input type="text" placeholder="Start Date - End Date" value="${exp.dates}" oninput="state.experiences[${idx}].dates=this.value; updatePreview()">
@@ -111,10 +112,11 @@ function addEducation() {
 
 function renderEducation() {
   const container = document.getElementById('education-list');
+  if (!container) return;
   container.innerHTML = '';
   state.education.forEach((edu, idx) => {
     container.innerHTML += `
-      <div style="border:1px dashed #ccc; padding:0.5rem; margin-bottom:0.5rem;">
+      <div style="border:1px dashed #cbd5e1; padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
         <input type="text" placeholder="Degree/Diploma" value="${edu.degree}" oninput="state.education[${idx}].degree=this.value; updatePreview()">
         <input type="text" placeholder="School/University" value="${edu.school}" oninput="state.education[${idx}].school=this.value; updatePreview()">
         <input type="text" placeholder="Graduation Year" value="${edu.year}" oninput="state.education[${idx}].year=this.value; updatePreview()">
@@ -124,7 +126,6 @@ function renderEducation() {
   });
 }
 
-// API Communication Helper
 async function callGeminiAPI(task, payload) {
   showToast('Connecting to Gemini AI...');
   try {
@@ -147,10 +148,9 @@ async function callGeminiAPI(task, payload) {
   }
 }
 
-// AI Feature Implementations
 async function aiImproveField(fieldId, sectionName) {
   const inputEl = document.getElementById(fieldId);
-  if (!inputEl.value.trim()) return alert('Please enter some text first.');
+  if (!inputEl || !inputEl.value.trim()) return alert('Please enter some text first.');
   
   const result = await callGeminiAPI('improve_text', { text: inputEl.value, sectionType: sectionName });
   if (result) {
@@ -161,7 +161,7 @@ async function aiImproveField(fieldId, sectionName) {
 
 async function aiImproveExp(index) {
   const descEl = document.getElementById(`exp-desc-${index}`);
-  if (!descEl.value.trim()) return alert('Please enter responsibilities first.');
+  if (!descEl || !descEl.value.trim()) return alert('Please enter responsibilities first.');
 
   const result = await callGeminiAPI('improve_text', { text: descEl.value, sectionType: 'Work Experience' });
   if (result) {
@@ -226,7 +226,6 @@ async function generateCoverLetter() {
   }
 }
 
-// PDF Exports
 function downloadResumePDF() {
   const element = document.getElementById('resume-preview');
   html2pdf().from(element).save(`${state.personal.name || 'Resume'}.pdf`);
@@ -245,7 +244,6 @@ function downloadCoverLetterPDF() {
   html2pdf().from(element).save('Cover_Letter.pdf');
 }
 
-// LocalStorage Persistence
 function saveResumeLocal() {
   localStorage.setItem('saved_resume', JSON.stringify(state));
   alert('Resume saved to local storage!');
@@ -263,23 +261,29 @@ function loadSavedDocs() {
   const res = localStorage.getItem('saved_resume');
   const letter = localStorage.getItem('saved_cover_letter');
 
-  document.getElementById('saved-resumes-list').innerHTML = res 
-    ? `<button class="btn secondary" onclick="loadResumeState()">Load Saved Resume (${JSON.parse(res).personal.name})</button>` 
-    : 'No saved resumes found.';
+  const resList = document.getElementById('saved-resumes-list');
+  if (resList) {
+    resList.innerHTML = res 
+      ? `<button class="btn secondary" onclick="loadResumeState()">Load Saved Resume (${JSON.parse(res).personal.name})</button>` 
+      : 'No saved resumes found.';
+  }
 
-  document.getElementById('saved-letters-list').innerHTML = letter 
-    ? `<p>Cover Letter Saved (${letter.substring(0, 30)}...)</p>` 
-    : 'No saved cover letters found.';
+  const letterList = document.getElementById('saved-letters-list');
+  if (letterList) {
+    letterList.innerHTML = letter 
+      ? `<p>Cover Letter Saved (${letter.substring(0, 30)}...)</p>` 
+      : 'No saved cover letters found.';
+  }
 }
 
 function loadResumeState() {
   const res = localStorage.getItem('saved_resume');
   if (res) {
     state = JSON.parse(res);
-    document.getElementById('res-name').value = state.personal.name;
-    document.getElementById('res-email').value = state.personal.email;
-    document.getElementById('res-summary').value = state.summary;
-    document.getElementById('res-skills').value = state.skills;
+    if (document.getElementById('res-name')) document.getElementById('res-name').value = state.personal.name;
+    if (document.getElementById('res-email')) document.getElementById('res-email').value = state.personal.email;
+    if (document.getElementById('res-summary')) document.getElementById('res-summary').value = state.summary;
+    if (document.getElementById('res-skills')) document.getElementById('res-skills').value = state.skills;
     renderExperiences();
     renderEducation();
     updatePreview();
@@ -287,7 +291,6 @@ function loadResumeState() {
   }
 }
 
-// Initial Boot
 window.onload = () => {
   updatePreview();
   loadSavedDocs();
