@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Resume & Cover Letter Builder</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- HTML2PDF CDN for PDF exports -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">CareerAI Builder</div>
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('home')">Home</button>
+      <button class="nav-btn" onclick="switchTab('resume')">Resume Builder</button>
+      <button class="nav-btn" onclick="switchTab('cover-letter')">Cover Letter</button>
+      <button class="nav-btn" onclick="switchTab('job-analyzer')">Job Analyzer</button>
+      <button class="nav-btn" onclick="switchTab('my-docs')">My Documents</button>
+    </nav>
+  </header>
+
+  <main id="app-content">
+    <!-- HOME TAB -->
+    <section id="tab-home" class="tab-content active">
+      <div class="hero">
+        <h1>Create Professional Resumes & Cover Letters with AI</h1>
+        <p>Create professional, job-ready resumes and personalized cover letters with the help of AI.</p>
+        <div class="hero-buttons">
+          <button class="btn primary" onclick="switchTab('resume')">Create Resume</button>
+          <button class="btn secondary" onclick="switchTab('cover-letter')">Create Cover Letter</button>
+          <button class="btn accent" onclick="switchTab('job-analyzer')">Try AI Assistant</button>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="card">
+          <h3>AI Resume Assistance</h3>
+          <p>Instantly rewrite bullet points into professional, impact-driven statements without inventing details.</p>
+        </div>
+        <div class="card">
+          <h3>Cover Letter Generation</h3>
+          <p>Generate highly tailored cover letters matching your target job role and preferred tone.</p>
+        </div>
+        <div class="card">
+          <h3>Job Description Analysis</h3>
+          <p>Extract crucial keywords, technical skills, and soft skills directly from job postings.</p>
+        </div>
+        <div class="card">
+          <h3>Resume Improvement</h3>
+          <p>Refine grammar and professional polish with dynamic Gemini API integration.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESUME BUILDER TAB -->
+    <section id="tab-resume" class="tab-content">
+      <div class="builder-layout">
+        <!-- Form Column -->
+        <div class="form-container">
+          <h2>Resume Details</h2>
+          
+          <!-- Template Picker -->
+          <div class="form-group inline">
+            <label>Template Style:</label>
+            <select id="template-select" onchange="updatePreview()">
+              <option value="classic">Classic</option>
+              <option value="modern" selected>Modern</option>
+              <option value="minimal">Minimal</option>
+            </select>
+          </div>
+
+          <!-- Personal Info -->
+          <details open>
+            <summary>Personal Information</summary>
+            <input type="text" id="res-name" placeholder="Full Name" oninput="updatePreview()">
+            <input type="email" id="res-email" placeholder="Email Address" oninput="updatePreview()">
+            <input type="text" id="res-phone" placeholder="Phone Number" oninput="updatePreview()">
+            <input type="text" id="res-address" placeholder="Address (City, Country)" oninput="updatePreview()">
+            <input type="text" id="res-linkedin" placeholder="LinkedIn URL" oninput="updatePreview()">
+            <input type="text" id="res-portfolio" placeholder="Portfolio / Website URL" oninput="updatePreview()">
+          </details>
+
+          <!-- Summary -->
+          <details>
+            <summary>Professional Summary</summary>
+            <textarea id="res-summary" placeholder="Write a brief professional summary..." oninput="updatePreview()"></textarea>
+            <button class="btn ai-btn" onclick="aiImproveField('res-summary', 'Professional Summary')">✨ Improve Summary with AI</button>
+          </details>
+
+          <!-- Work Experience -->
+          <details>
+            <summary>Work Experience</summary>
+            <div id="experience-list"></div>
+            <button class="btn secondary" onclick="addExperience()">+ Add Experience</button>
+          </details>
+
+          <!-- Education -->
+          <details>
+            <summary>Education</summary>
+            <div id="education-list"></div>
+            <button class="btn secondary" onclick="addEducation()">+ Add Education</button>
+          </details>
+
+          <!-- Skills -->
+          <details>
+            <summary>Skills</summary>
+            <label>Technical & Soft Skills (comma separated):</label>
+            <textarea id="res-skills" placeholder="Python, JavaScript, SQL, Leadership..." oninput="updatePreview()"></textarea>
+            <button class="btn ai-btn" onclick="aiSuggestSkills()">✨ Suggest Skills with AI</button>
+          </details>
+
+          <!-- Actions -->
+          <div class="action-bar">
+            <button class="btn success" onclick="saveResumeLocal()">Save Resume</button>
+            <button class="btn primary" onclick="downloadResumePDF()">Download PDF</button>
+          </div>
+        </div>
+
+        <!-- Preview Column -->
+        <div class="preview-container">
+          <div id="status-toast" class="toast hidden">Processing request...</div>
+          <div id="resume-preview" class="resume-sheet template-modern">
+            <!-- Dynamic Preview Content -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COVER LETTER TAB -->
+    <section id="tab-cover-letter" class="tab-content">
+      <div class="builder-layout">
+        <div class="form-container">
+          <h2>AI Cover Letter Builder</h2>
+          <input type="text" id="cl-name" placeholder="Full Name">
+          <input type="text" id="cl-job" placeholder="Target Job Position">
+          <input type="text" id="cl-company" placeholder="Company Name">
+          <label>Tone of Voice:</label>
+          <select id="cl-tone">
+            <option value="Professional">Professional</option>
+            <option value="Confident">Confident</option>
+            <option value="Simple">Simple</option>
+            <option value="Friendly">Friendly</option>
+          </select>
+          <textarea id="cl-skills" placeholder="Your Relevant Skills"></textarea>
+          <textarea id="cl-exp" placeholder="Your Key Experience/Achievements"></textarea>
+          <textarea id="cl-reason" placeholder="Why do you want to apply to this company?"></textarea>
+          <textarea id="cl-jd" placeholder="Target Job Description (Optional)"></textarea>
+          
+          <button class="btn ai-btn large" onclick="generateCoverLetter()">✨ Generate Cover Letter with AI</button>
+        </div>
+
+        <div class="preview-container">
+          <h2>Cover Letter Preview</h2>
+          <textarea id="cl-output" class="letter-output" placeholder="Generated cover letter will appear here and remains editable..."></textarea>
+          <div class="action-bar">
+            <button class="btn success" onclick="saveCoverLetterLocal()">Save Letter</button>
+            <button class="btn primary" onclick="downloadCoverLetterPDF()">Download PDF</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOB ANALYZER TAB -->
+    <section id="tab-job-analyzer" class="tab-content">
+      <div class="analyzer-layout">
+        <h2>Job Description Analyzer</h2>
+        <p>Paste a job description to extract essential skills, qualifications, and keyword optimizations.</p>
+        <textarea id="analyzer-input" placeholder="Paste full job posting here..."></textarea>
+        <button class="btn ai-btn" onclick="analyzeJobDescription()">✨ Analyze Job Description</button>
+
+        <div id="analyzer-results" class="results-grid hidden">
+          <div class="card result-card">
+            <h4>Technical Skills</h4>
+            <ul id="res-tech-skills"></ul>
+          </div>
+          <div class="card result-card">
+            <h4>Soft Skills</h4>
+            <ul id="res-soft-skills"></ul>
+          </div>
+          <div class="card result-card">
+            <h4>Recommended Keywords</h4>
+            <ul id="res-keywords"></ul>
+          </div>
+          <div class="card result-card">
+            <h4>Core Responsibilities</h4>
+            <ul id="res-responsibilities"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MY DOCUMENTS TAB -->
+    <section id="tab-my-docs" class="tab-content">
+      <h2>Saved Documents</h2>
+      <div class="docs-layout">
+        <div>
+          <h3>Resumes</h3>
+          <div id="saved-resumes-list">No saved resumes found.</div>
+        </div>
+        <div>
+          <h3>Cover Letters</h3>
+          <div id="saved-letters-list">No saved cover letters found.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
