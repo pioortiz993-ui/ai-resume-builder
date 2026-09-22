@@ -81,11 +81,14 @@ main {
 
 .hero { 
   text-align: center; 
-  padding: 3rem 2rem 3.5rem 2rem; /* Added extra bottom padding so buttons stay safely inside the box */
+  padding: 3rem 2rem; 
   background: var(--card-bg); 
   border-radius: 8px; 
   border: 1px solid var(--border-color); 
   margin-bottom: 2rem; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero-buttons { 
@@ -93,7 +96,6 @@ main {
   gap: 1rem; 
   justify-content: center; 
   margin-top: 1.5rem; 
-  margin-bottom: 0; 
   flex-wrap: wrap; 
 }
 
