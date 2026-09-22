@@ -51,35 +51,38 @@ function updatePreview() {
   const sheet = document.getElementById('resume-sheet');
   const template = document.getElementById('template-select').value;
   
-  const name = document.getElementById('res-name').value || 'Peepps';
-  const email = document.getElementById('res-email').value || 'email@example.com';
-  const phone = document.getElementById('res-phone').value || '';
-  const location = document.getElementById('res-location').value || '';
-  const summary = document.getElementById('res-summary').value || '';
-  const expTitle = document.getElementById('res-exp-title').value || '';
-  const expCompany = document.getElementById('res-exp-company').value || '';
-  const expDates = document.getElementById('res-exp-dates').value || '';
-  const expDesc = document.getElementById('res-exp-desc').value || '';
-  const skills = document.getElementById('res-skills').value || '';
+  const name = document.getElementById('res-name').value.trim();
+  const email = document.getElementById('res-email').value.trim();
+  const phone = document.getElementById('res-phone').value.trim();
+  const location = document.getElementById('res-location').value.trim();
+  const summary = document.getElementById('res-summary').value.trim();
+  const expTitle = document.getElementById('res-exp-title').value.trim();
+  const expCompany = document.getElementById('res-exp-company').value.trim();
+  const expDates = document.getElementById('res-exp-dates').value.trim();
+  const expDesc = document.getElementById('res-exp-desc').value.trim();
+  const skills = document.getElementById('res-skills').value.trim();
 
   sheet.className = `resume-sheet template-${template}`;
 
-  const bullets = expDesc.split('\n').filter(line => line.trim() !== '').map(b => `<li>${b}</li>`).join('');
-  const skillBadges = skills.split(',').filter(s => s.trim() !== '').map(s => `<span style="display:inline-block; background:#e2e8f0; padding:2px 8px; margin:2px; border-radius:4px; font-size:0.85rem; color:#0f172a;">${s.trim()}</span>`).join(' ');
+  // Build clean contact row without trailing | separators
+  const contactDetails = [email, phone, location].filter(item => item !== '').join(' | ');
+
+  const bullets = expDesc ? expDesc.split('\n').filter(line => line.trim() !== '').map(b => `<li>${b}</li>`).join('') : '';
+  const skillBadges = skills ? skills.split(',').filter(s => s.trim() !== '').map(s => `<span style="display:inline-block; background:#e2e8f0; padding:2px 8px; margin:2px; border-radius:4px; font-size:0.85rem; color:#0f172a;">${s.trim()}</span>`).join(' ') : '';
 
   sheet.innerHTML = `
-    <h1>${name}</h1>
-    <p style="margin-bottom: 1rem;">${email} | ${phone} | ${location}</p>
+    ${name ? `<h1>${name}</h1>` : '<h1 style="color:#cbd5e1;">Your Name</h1>'}
+    ${contactDetails ? `<p style="margin-bottom: 1rem;">${contactDetails}</p>` : ''}
     
     ${summary ? `<h3>Professional Summary</h3><p>${summary}</p>` : ''}
     
     ${expTitle || expCompany ? `
       <h3>Experience</h3>
       <div style="display:flex; justify-content:space-between;">
-        <strong>${expTitle}${expCompany ? `@ ${expCompany}` : ''}</strong>
+        <strong>${expTitle}${expTitle && expCompany ? ' @ ' : ''}${expCompany}</strong>
         <span>${expDates}</span>
       </div>
-      <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">${bullets}</ul>
+      ${bullets ? `<ul style="margin-left: 1.2rem; margin-top: 0.5rem;">${bullets}</ul>` : ''}
     ` : ''}
 
     ${skills ? `<h3>Skills</h3><div>${skillBadges}</div>` : ''}

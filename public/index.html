@@ -75,23 +75,23 @@
           <details open>
             <summary>Personal Information</summary>
             <label>Full Name</label>
-            <input type="text" id="res-name" value="Peepps" oninput="updatePreview()">
+            <input type="text" id="res-name" placeholder="Peepps" value="" oninput="updatePreview()">
             
             <label>Email</label>
-            <input type="email" id="res-email" value="peepps@example.com" oninput="updatePreview()">
+            <input type="email" id="res-email" placeholder="peepps@example.com" value="" oninput="updatePreview()">
             
             <label>Phone</label>
-            <input type="text" id="res-phone" value="+1 (555) 019-2834" oninput="updatePreview()">
+            <input type="text" id="res-phone" placeholder="+1 (555) 019-2834" value="" oninput="updatePreview()">
             
             <label>Location</label>
-            <input type="text" id="res-location" value="San Francisco, CA" oninput="updatePreview()">
+            <input type="text" id="res-location" placeholder="San Francisco, CA" value="" oninput="updatePreview()">
           </details>
 
           <!-- Professional Summary -->
           <details>
             <summary>Professional Summary</summary>
             <label>Summary</label>
-            <textarea id="res-summary" oninput="updatePreview()">Detail-oriented professional with experience building web applications and optimizing user workflows.</textarea>
+            <textarea id="res-summary" placeholder="Write a summary..." oninput="updatePreview()"></textarea>
             <button class="btn ai-btn" onclick="aiOptimizeField('res-summary', 'professional summary')">✨ AI Polish Summary</button>
           </details>
 
@@ -99,17 +99,16 @@
           <details>
             <summary>Work Experience</summary>
             <label>Job Title</label>
-            <input type="text" id="res-exp-title" value="Software Developer" oninput="updatePreview()">
+            <input type="text" id="res-exp-title" placeholder="Software Developer" value="" oninput="updatePreview()">
             
             <label>Company</label>
-            <input type="text" id="res-exp-company" value="Tech Corp" oninput="updatePreview()">
+            <input type="text" id="res-exp-company" placeholder="Tech Corp" value="" oninput="updatePreview()">
             
             <label>Dates</label>
-            <input type="text" id="res-exp-dates" value="2022 - Present" oninput="updatePreview()">
+            <input type="text" id="res-exp-dates" placeholder="2022 - Present" value="" oninput="updatePreview()">
             
             <label>Bullet Points / Responsibilities</label>
-            <textarea id="res-exp-desc" oninput="updatePreview()">Developed responsive user interfaces using HTML, CSS, and JavaScript.
-Integrated serverless backend API endpoints to streamline processing speed.</textarea>
+            <textarea id="res-exp-desc" placeholder="Enter key responsibilities..." oninput="updatePreview()"></textarea>
             <button class="btn ai-btn" onclick="aiOptimizeField('res-exp-desc', 'resume experience bullet points')">✨ AI Enhance Experience</button>
           </details>
 
@@ -117,7 +116,7 @@ Integrated serverless backend API endpoints to streamline processing speed.</tex
           <details>
             <summary>Skills</summary>
             <label>Key Skills (comma-separated)</label>
-            <textarea id="res-skills" oninput="updatePreview()">JavaScript, HTML5, CSS3, REST APIs, Git, Node.js, Problem Solving</textarea>
+            <textarea id="res-skills" placeholder="JavaScript, HTML5, CSS3, Git" oninput="updatePreview()"></textarea>
           </details>
 
           <div class="action-bar">
@@ -142,7 +141,7 @@ Integrated serverless backend API endpoints to streamline processing speed.</tex
       <div class="form-container" style="max-width: 800px; margin: 0 auto;">
         <h2>Cover Letter Generator</h2>
         <label>Your Full Name</label>
-        <input type="text" id="cl-name" value="Peepps">
+        <input type="text" id="cl-name" placeholder="Peepps" value="">
 
         <label>Target Job Title</label>
         <input type="text" id="cl-title" placeholder="e.g. Frontend Engineer">
