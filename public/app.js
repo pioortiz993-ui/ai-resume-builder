@@ -1,326 +1,260 @@
-let state = {
-  personal: { name: '', email: '', phone: '', address: '', linkedin: '', portfolio: '' },
-  summary: '',
-  experiences: [],
-  education: [],
-  skills: ''
-};
-
+// TAB NAVIGATION
 function switchTab(tabName) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    if (btn.id !== 'theme-toggle-btn') btn.classList.remove('active');
+  });
+
   const selectedTab = document.getElementById(`tab-${tabName}`);
   if (selectedTab) selectedTab.classList.add('active');
-  if (event && event.target) event.target.classList.add('active');
+
+  const navBtns = document.querySelectorAll('.nav-btn');
+  navBtns.forEach(btn => {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabName)) {
+      btn.classList.add('active');
+    }
+  });
+
+  if (tabName === 'my-docs') {
+    loadSavedDocs();
+  }
 }
 
-function showToast(message) {
-  const toast = document.getElementById('status-toast');
-  toast.innerText = message;
-  toast.classList.remove('hidden');
+// THEME TOGGLE LOGIC
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('preferred_theme', newTheme);
+  updateThemeButton(newTheme);
 }
 
-function hideToast() {
-  document.getElementById('status-toast').classList.add('hidden');
+function updateThemeButton(theme) {
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) {
+    btn.innerText = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+  }
 }
 
+function initTheme() {
+  const savedTheme = localStorage.getItem('preferred_theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  updateThemeButton(theme);
+}
+
+// RESUME PREVIEW GENERATOR
 function updatePreview() {
-  const selectEl = document.getElementById('template-select');
-  const template = selectEl ? selectEl.value : 'modern';
-  const preview = document.getElementById('resume-preview');
-  if (!preview) return;
+  const sheet = document.getElementById('resume-sheet');
+  const template = document.getElementById('template-select').value;
+  
+  const name = document.getElementById('res-name').value || 'Peepps';
+  const email = document.getElementById('res-email').value || 'email@example.com';
+  const phone = document.getElementById('res-phone').value || '';
+  const location = document.getElementById('res-location').value || '';
+  const summary = document.getElementById('res-summary').value || '';
+  const expTitle = document.getElementById('res-exp-title').value || '';
+  const expCompany = document.getElementById('res-exp-company').value || '';
+  const expDates = document.getElementById('res-exp-dates').value || '';
+  const expDesc = document.getElementById('res-exp-desc').value || '';
+  const skills = document.getElementById('res-skills').value || '';
 
-  preview.className = `resume-sheet template-${template}`;
+  sheet.className = `resume-sheet template-${template}`;
 
-  state.personal.name = document.getElementById('res-name')?.value || 'John Doe';
-  state.personal.email = document.getElementById('res-email')?.value || 'john@example.com';
-  state.personal.phone = document.getElementById('res-phone')?.value || '+1 234 567 890';
-  state.personal.address = document.getElementById('res-address')?.value || 'City, Country';
-  state.personal.linkedin = document.getElementById('res-linkedin')?.value || '';
-  state.personal.portfolio = document.getElementById('res-portfolio')?.value || '';
-  state.summary = document.getElementById('res-summary')?.value || '';
-  state.skills = document.getElementById('res-skills')?.value || '';
+  const bullets = expDesc.split('\n').filter(line => line.trim() !== '').map(b => `<li>${b}</li>`).join('');
+  const skillBadges = skills.split(',').filter(s => s.trim() !== '').map(s => `<span style="display:inline-block; background:#e2e8f0; padding:2px 8px; margin:2px; border-radius:4px; font-size:0.85rem; color:#0f172a;">${s.trim()}</span>`).join(' ');
 
-  let html = `
-    <h1>${state.personal.name}</h1>
-    <p>${state.personal.email} | ${state.personal.phone} | ${state.personal.address}</p>
-    <p>${state.personal.linkedin ? state.personal.linkedin + ' | ' : ''}${state.personal.portfolio}</p>
+  sheet.innerHTML = `
+    <h1>${name}</h1>
+    <p style="margin-bottom: 1rem;">${email} | ${phone} | ${location}</p>
+    
+    ${summary ? `<h3>Professional Summary</h3><p>${summary}</p>` : ''}
+    
+    ${expTitle || expCompany ? `
+      <h3>Experience</h3>
+      <div style="display:flex; justify-content:space-between;">
+        <strong>${expTitle}${expCompany ? `@ ${expCompany}` : ''}</strong>
+        <span>${expDates}</span>
+      </div>
+      <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">${bullets}</ul>
+    ` : ''}
+
+    ${skills ? `<h3>Skills</h3><div>${skillBadges}</div>` : ''}
   `;
-
-  if (state.summary) {
-    html += `<h3>Professional Summary</h3><p>${state.summary}</p>`;
-  }
-
-  if (state.experiences.length > 0) {
-    html += `<h3>Work Experience</h3>`;
-    state.experiences.forEach(exp => {
-      html += `
-        <div style="margin-bottom: 0.8rem;">
-          <strong>${exp.role || 'Role'}</strong> - ${exp.company || 'Company'} <em>(${exp.dates || 'Dates'})</em>
-          <p>${exp.desc || ''}</p>
-        </div>`;
-    });
-  }
-
-  if (state.education.length > 0) {
-    html += `<h3>Education</h3>`;
-    state.education.forEach(edu => {
-      html += `
-        <div style="margin-bottom: 0.5rem;">
-          <strong>${edu.degree || 'Degree'}</strong>, ${edu.school || 'School'} <em>(${edu.year || 'Year'})</em>
-        </div>`;
-    });
-  }
-
-  if (state.skills) {
-    html += `<h3>Skills</h3><p>${state.skills}</p>`;
-  }
-
-  preview.innerHTML = html;
 }
 
-function addExperience() {
-  const id = Date.now();
-  state.experiences.push({ id, role: '', company: '', dates: '', desc: '' });
-  renderExperiences();
-}
-
-function renderExperiences() {
-  const container = document.getElementById('experience-list');
-  if (!container) return;
-  container.innerHTML = '';
-  state.experiences.forEach((exp, idx) => {
-    container.innerHTML += `
-      <div style="border:1px dashed #cbd5e1; padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
-        <input type="text" placeholder="Job Title" value="${exp.role}" oninput="state.experiences[${idx}].role=this.value; updatePreview()">
-        <input type="text" placeholder="Company" value="${exp.company}" oninput="state.experiences[${idx}].company=this.value; updatePreview()">
-        <input type="text" placeholder="Start Date - End Date" value="${exp.dates}" oninput="state.experiences[${idx}].dates=this.value; updatePreview()">
-        <textarea id="exp-desc-${idx}" placeholder="Responsibilities & Achievements">${exp.desc}</textarea>
-        <button class="btn ai-btn" onclick="aiImproveExp(${idx})">✨ Improve with AI</button>
-        <button class="btn secondary" onclick="state.experiences.splice(${idx},1); renderExperiences(); updatePreview();">Delete</button>
-      </div>
-    `;
-  });
-}
-
-function addEducation() {
-  const id = Date.now();
-  state.education.push({ id, degree: '', school: '', year: '' });
-  renderEducation();
-}
-
-function renderEducation() {
-  const container = document.getElementById('education-list');
-  if (!container) return;
-  container.innerHTML = '';
-  state.education.forEach((edu, idx) => {
-    container.innerHTML += `
-      <div style="border:1px dashed #cbd5e1; padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
-        <input type="text" placeholder="Degree/Diploma" value="${edu.degree}" oninput="state.education[${idx}].degree=this.value; updatePreview()">
-        <input type="text" placeholder="School/University" value="${edu.school}" oninput="state.education[${idx}].school=this.value; updatePreview()">
-        <input type="text" placeholder="Graduation Year" value="${edu.year}" oninput="state.education[${idx}].year=this.value; updatePreview()">
-        <button class="btn secondary" onclick="state.education.splice(${idx},1); renderEducation(); updatePreview();">Delete</button>
-      </div>
-    `;
-  });
-}
-
-async function callGeminiAPI(task, payload) {
-  showToast('Connecting to Gemini AI...');
+// AI API CALLER
+async function callGeminiAPI(prompt) {
+  showToast('AI is thinking...');
   try {
-    const res = await fetch('/api/generate', {
+    const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task, payload })
+      body: JSON.stringify({ prompt })
     });
-    const data = await res.json();
-    hideToast();
-    if (data.error) {
-      alert('AI Error: ' + data.error);
-      return null;
-    }
+    
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    showToast('Success!');
     return data.result;
-  } catch (e) {
-    hideToast();
-    alert('Network Error: Unable to reach AI endpoint.');
+  } catch (err) {
+    showToast('Error: ' + err.message);
     return null;
   }
 }
 
-async function aiImproveField(fieldId, sectionName) {
-  const inputEl = document.getElementById(fieldId);
-  if (!inputEl || !inputEl.value.trim()) return alert('Please enter some text first.');
+// AI OPTIMIZE FIELD
+async function aiOptimizeField(elementId, fieldType) {
+  const field = document.getElementById(elementId);
+  if (!field.value.trim()) {
+    showToast('Please enter text first');
+    return;
+  }
   
-  const result = await callGeminiAPI('improve_text', { text: inputEl.value, sectionType: sectionName });
+  const prompt = `Rewrite and enhance the following ${fieldType} for a professional resume to make it action-oriented, metrics-driven, and clear. Return ONLY the enhanced text without extra commentary:\n\n"${field.value}"`;
+  const result = await callGeminiAPI(prompt);
   if (result) {
-    inputEl.value = result.trim();
+    field.value = result.trim();
     updatePreview();
   }
 }
 
-async function aiImproveExp(index) {
-  const descEl = document.getElementById(`exp-desc-${index}`);
-  if (!descEl || !descEl.value.trim()) return alert('Please enter responsibilities first.');
-
-  const result = await callGeminiAPI('improve_text', { text: descEl.value, sectionType: 'Work Experience' });
-  if (result) {
-    descEl.value = result.trim();
-    state.experiences[index].desc = result.trim();
-    updatePreview();
-  }
-}
-
-async function aiSuggestSkills() {
-  const context = JSON.stringify(state.experiences) + ' ' + state.summary;
-  if (!context.trim()) return alert('Add work experience or summary first.');
-
-  const result = await callGeminiAPI('suggest_skills', { text: context });
-  if (result) {
-    document.getElementById('res-skills').value = result.trim();
-    updatePreview();
-  }
-}
-
-async function analyzeJobDescription() {
-  const jd = document.getElementById('analyzer-input').value;
-  if (!jd.trim()) return alert('Please paste a job description first.');
-
-  const rawJson = await callGeminiAPI('analyze_job', { text: jd });
-  if (rawJson) {
-    try {
-      const parsed = JSON.parse(rawJson);
-      document.getElementById('analyzer-results').classList.remove('hidden');
-      
-      const renderList = (id, items) => {
-        document.getElementById(id).innerHTML = (items || []).map(i => `<li>${i}</li>`).join('');
-      };
-
-      renderList('res-tech-skills', parsed.technicalSkills);
-      renderList('res-soft-skills', parsed.softSkills);
-      renderList('res-keywords', parsed.keywords);
-      renderList('res-responsibilities', parsed.responsibilities);
-    } catch (err) {
-      alert('Failed to parse AI output. Try again.');
-    }
-  }
-}
-
+// COVER LETTER GENERATION
 async function generateCoverLetter() {
-  const payload = {
-    fullName: document.getElementById('cl-name').value,
-    jobPosition: document.getElementById('cl-job').value,
-    companyName: document.getElementById('cl-company').value,
-    tone: document.getElementById('cl-tone').value,
-    skills: document.getElementById('cl-skills').value,
-    experience: document.getElementById('cl-exp').value,
-    reason: document.getElementById('cl-reason').value,
-    jobDescription: document.getElementById('cl-jd').value
-  };
+  const name = document.getElementById('cl-name').value || 'Peepps';
+  const title = document.getElementById('cl-title').value;
+  const company = document.getElementById('cl-company').value;
+  const jobDesc = document.getElementById('cl-job-desc').value;
 
-  if (!payload.fullName || !payload.jobPosition) return alert('Please fill in required fields.');
-
-  const letter = await callGeminiAPI('generate_cover_letter', payload);
-  if (letter) {
-    document.getElementById('cl-output').value = letter.trim();
+  if (!title || !company) {
+    showToast('Please specify Job Title and Company');
+    return;
   }
-}
 
-function downloadResumePDF() {
-  const element = document.getElementById('resume-preview');
-  html2pdf().from(element).save(`${state.personal.name || 'Resume'}.pdf`);
-}
-
-function downloadCoverLetterPDF() {
-  const text = document.getElementById('cl-output').value;
-  if (!text) return alert('No letter content to download.');
+  const prompt = `Write a compelling, professional cover letter for ${name} applying for the ${title} position at ${company}. Context/Job Details: ${jobDesc}. Keep it concise, formal, and persuasive.`;
+  const result = await callGeminiAPI(prompt);
   
-  const element = document.createElement('div');
-  element.style.padding = '30px';
-  element.style.whiteSpace = 'pre-wrap';
-  element.style.fontFamily = 'Georgia, serif';
-  element.innerText = text;
-
-  html2pdf().from(element).save('Cover_Letter.pdf');
-}
-
-function saveResumeLocal() {
-  localStorage.setItem('saved_resume', JSON.stringify(state));
-  alert('Resume saved to local storage!');
-  loadSavedDocs();
-}
-
-function saveCoverLetterLocal() {
-  const letter = document.getElementById('cl-output').value;
-  localStorage.setItem('saved_cover_letter', letter);
-  alert('Cover letter saved to local storage!');
-  loadSavedDocs();
-}
-
-function deleteSavedResume() {
-  if (confirm('Are you sure you want to delete your saved resume?')) {
-    localStorage.removeItem('saved_resume');
-    loadSavedDocs();
+  if (result) {
+    document.getElementById('cl-output').value = result.trim();
   }
 }
 
-function deleteSavedCoverLetter() {
-  if (confirm('Are you sure you want to delete your saved cover letter?')) {
-    localStorage.removeItem('saved_cover_letter');
-    loadSavedDocs();
+// JOB ANALYZER
+async function analyzeJob() {
+  const jobDesc = document.getElementById('ja-job-desc').value;
+  const resumeText = document.getElementById('ja-resume-text').value;
+
+  if (!jobDesc || !resumeText) {
+    showToast('Please fill in both fields');
+    return;
   }
+
+  const prompt = `Analyze the fit between this Resume and Job Description.
+Resume: "${resumeText}"
+Job Description: "${jobDesc}"
+
+Provide output in this exact format:
+MATCH SCORE: [0-100]%
+ANALYSIS:
+- Key matching strengths
+- Missing keywords/skills
+- Recommendations to improve fit`;
+
+  const result = await callGeminiAPI(prompt);
+  if (result) {
+    document.getElementById('ja-results').classList.remove('hidden');
+    const scoreMatch = result.match(/MATCH SCORE:\s*(\d+%)/i);
+    document.getElementById('ja-score').innerText = scoreMatch ? scoreMatch[1] : '85%';
+    document.getElementById('ja-analysis-text').innerText = result.replace(/MATCH SCORE:.*?\n/i, '').trim();
+  }
+}
+
+// LOCAL STORAGE MANAGEMENT
+function saveDocument(type) {
+  const docs = JSON.parse(localStorage.getItem('saved_docs') || '[]');
+  
+  if (type === 'resume') {
+    const doc = {
+      id: Date.now(),
+      type: 'Resume',
+      title: (document.getElementById('res-name').value || 'Peepps') + ' - Resume',
+      date: new Date().toLocaleDateString(),
+      data: {
+        name: document.getElementById('res-name').value,
+        email: document.getElementById('res-email').value,
+        summary: document.getElementById('res-summary').value
+      }
+    };
+    docs.push(doc);
+  } else if (type === 'cover-letter') {
+    const doc = {
+      id: Date.now(),
+      type: 'Cover Letter',
+      title: document.getElementById('cl-title').value + ' @ ' + document.getElementById('cl-company').value,
+      date: new Date().toLocaleDateString(),
+      content: document.getElementById('cl-output').value
+    };
+    docs.push(doc);
+  }
+
+  localStorage.setItem('saved_docs', JSON.stringify(docs));
+  showToast('Document saved successfully!');
 }
 
 function loadSavedDocs() {
-  const res = localStorage.getItem('saved_resume');
-  const letter = localStorage.getItem('saved_cover_letter');
+  const docsList = document.getElementById('docs-list');
+  const docs = JSON.parse(localStorage.getItem('saved_docs') || '[]');
 
-  const resList = document.getElementById('saved-resumes-list');
-  if (resList) {
-    if (res) {
-      const name = JSON.parse(res).personal?.name || 'Resume';
-      resList.innerHTML = `
-        <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
-          <button class="btn secondary" onclick="loadResumeState()">Load Saved Resume (${name})</button>
-          <button class="btn" style="background-color: #ef4444; color: white;" onclick="deleteSavedResume()">Delete</button>
-        </div>
-      `;
-    } else {
-      resList.innerHTML = 'No saved resumes found.';
-    }
+  if (docs.length === 0) {
+    docsList.innerHTML = '<p>No saved documents yet.</p>';
+    return;
   }
 
-  const letterList = document.getElementById('saved-letters-list');
-  if (letterList) {
-    if (letter) {
-      letterList.innerHTML = `
-        <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
-          <span>Cover Letter Saved (${letter.substring(0, 30)}...)</span>
-          <button class="btn" style="background-color: #ef4444; color: white;" onclick="deleteSavedCoverLetter()">Delete</button>
-        </div>
-      `;
-    } else {
-      letterList.innerHTML = 'No saved cover letters found.';
-    }
-  }
+  docsList.innerHTML = docs.map(doc => `
+    <div class="card">
+      <h3>${doc.title}</h3>
+      <p><strong>Type:</strong> ${doc.type}</p>
+      <p><strong>Date:</strong> ${doc.date}</p>
+      <button class="btn primary" style="margin-top:0.8rem;" onclick="deleteDoc(${doc.id})">Delete</button>
+    </div>
+  `).join('');
 }
 
-function loadResumeState() {
-  const res = localStorage.getItem('saved_resume');
-  if (res) {
-    state = JSON.parse(res);
-    if (document.getElementById('res-name')) document.getElementById('res-name').value = state.personal.name;
-    if (document.getElementById('res-email')) document.getElementById('res-email').value = state.personal.email;
-    if (document.getElementById('res-summary')) document.getElementById('res-summary').value = state.summary;
-    if (document.getElementById('res-skills')) document.getElementById('res-skills').value = state.skills;
-    renderExperiences();
-    renderEducation();
-    updatePreview();
-    alert('Resume loaded!');
-  }
+function deleteDoc(id) {
+  let docs = JSON.parse(localStorage.getItem('saved_docs') || '[]');
+  docs = docs.filter(d => d.id !== id);
+  localStorage.setItem('saved_docs', JSON.stringify(docs));
+  loadSavedDocs();
+  showToast('Document deleted');
 }
 
+// PDF EXPORT
+function downloadPDF() {
+  const element = document.getElementById('resume-sheet');
+  const opt = {
+    margin:       0.5,
+    filename:     'Resume.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
+// UTILITY TOAST
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.innerText = msg;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+// INITIALIZATION
 window.onload = () => {
+  initTheme();
   updatePreview();
   loadSavedDocs();
 };

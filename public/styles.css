@@ -9,18 +9,16 @@
   --nav-hover-bg: #eff6ff;
 }
 
-/* AUTOMATIC DARK MODE BASED ON SYSTEM PREFERENCE */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary-color: #3b82f6;
-    --secondary-color: #94a3b8;
-    --accent-color: #a78bfa;
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-color: #f8fafc;
-    --border-color: #334155;
-    --nav-hover-bg: #1e3a8a;
-  }
+/* DARK MODE OVERRIDE */
+[data-theme="dark"] {
+  --primary-color: #3b82f6;
+  --secondary-color: #94a3b8;
+  --accent-color: #a78bfa;
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --text-color: #f8fafc;
+  --border-color: #334155;
+  --nav-hover-bg: #1e3a8a;
 }
 
 * { 
@@ -166,7 +164,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 .preview-container { position: relative; }
 
-/* Keep actual resume sheet paper white for realistic PDF exporting */
+/* Keep actual paper white for realistic PDF exporting */
 .resume-sheet { 
   background: #ffffff; 
   color: #1e293b; 
@@ -179,7 +177,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 /* RESUME TEMPLATES */
 .template-classic { font-family: 'Times New Roman', Times, serif; }
-.template-classic h1 { border-bottom: 2rem solid #000; text-align: center; font-size: 2rem; color: #000; }
+.template-classic h1 { border-bottom: 2px solid #000; text-align: center; font-size: 2rem; color: #000; }
 .template-classic h3 { border-bottom: 1px solid #000; margin-top: 1rem; text-transform: uppercase; color: #000; }
 
 .template-modern { font-family: 'Segoe UI', sans-serif; color: #1e293b; }
