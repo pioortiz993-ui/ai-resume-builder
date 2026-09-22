@@ -32,8 +32,8 @@ function updatePreview() {
   const preview = document.getElementById('resume-preview');
   preview.className = `resume-sheet template-${template}`;
 
-  state.personal.name = document.getElementById('res-name').value || 'John Doe';
-  state.personal.email = document.getElementById('res-email').value || 'john@example.com';
+  state.personal.name = document.getElementById('res-name').value || 'Peepps';
+  state.personal.email = document.getElementById('res-email').value || 'Peepps@example.com';
   state.personal.phone = document.getElementById('res-phone').value || '+1 234 567 890';
   state.personal.address = document.getElementById('res-address').value || 'City, Country';
   state.personal.linkedin = document.getElementById('res-linkedin').value;
