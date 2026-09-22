@@ -81,27 +81,32 @@ main {
 
 .hero { 
   text-align: center; 
-  padding: 3rem 2rem; 
+  padding: 3.5rem 2rem; 
   background: var(--card-bg); 
   border-radius: 8px; 
   border: 1px solid var(--border-color); 
-  margin-bottom: 2rem; 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-bottom: 2.5rem; /* Creates clean distance between the hero box and feature cards */
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 { 
+  margin-bottom: 1rem; 
+  font-size: 2.2rem; 
+}
+
+.hero p { 
+  color: var(--secondary-color); 
+  margin-bottom: 1.5rem; 
 }
 
 .hero-buttons { 
   display: flex; 
   gap: 1rem; 
   justify-content: center; 
-  margin-top: 1.5rem; 
   flex-wrap: wrap; 
+  margin-top: 1.5rem;
 }
-
-.hero h1 { margin-bottom: 1rem; font-size: 2.2rem; }
-.hero p { color: var(--secondary-color); margin-bottom: 1.5rem; }
-.hero-buttons { display: flex; gap: 1rem; justify-content: center; }
 
 .features-grid { 
   display: grid; 
