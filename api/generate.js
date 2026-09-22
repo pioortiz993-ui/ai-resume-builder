@@ -8,7 +8,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'GEMINI_API_KEY environment variable is missing on server.' });
   }
 
-  const { task, payload } = req.body;
+  // Handle both structured { task, payload } and fallback { prompt } formats
+  let task = req.body.task;
+  let payload = req.body.payload;
+  const promptInput = req.body.prompt;
+
+  if (!task && promptInput) {
+    task = 'improve_text';
+    payload = { text: promptInput };
+  }
+
   if (!task || !payload) {
     return res.status(400).json({ error: 'Missing task or payload in request body.' });
   }
@@ -17,7 +26,7 @@ export default async function handler(req, res) {
 
   switch (task) {
     case 'improve_text':
-      prompt = `You are an expert career consultant. Rewrite and enhance the following description for a resume section (${payload.sectionType}). 
+      prompt = `You are an expert career consultant. Rewrite and enhance the following description for a resume section (${payload.sectionType || 'General'}). 
 Make it concise, actionable, and professional. 
 CRITICAL RULE: Strictly rely on the user's provided facts. Do NOT invent new job titles, metrics, or experiences that were not provided.
 User Input: "${payload.text}"`;
@@ -50,11 +59,11 @@ Ensure the letter includes a professional greeting, introduction, alignment of s
       break;
 
     default:
-      return res.status(400).json({ error: 'Invalid task specified.' });
+      prompt = promptInput || `Enhance the following text professionally: "${JSON.stringify(payload)}"`;
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     
     const response = await fetch(url, {
       method: 'POST',
