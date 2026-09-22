@@ -75,23 +75,23 @@
           <details open>
             <summary>Personal Information</summary>
             <label>Full Name</label>
-            <input type="text" id="res-name" placeholder="Peepps" value="" oninput="updatePreview()">
+            <input type="text" id="res-name" placeholder="Peepps" oninput="updatePreview()">
             
             <label>Email</label>
-            <input type="email" id="res-email" placeholder="peepps@example.com" value="" oninput="updatePreview()">
+            <input type="email" id="res-email" placeholder="peepps@example.com" oninput="updatePreview()">
             
             <label>Phone</label>
-            <input type="text" id="res-phone" placeholder="+1 (555) 019-2834" value="" oninput="updatePreview()">
+            <input type="text" id="res-phone" placeholder="+1 (555) 019-2834" oninput="updatePreview()">
             
             <label>Location</label>
-            <input type="text" id="res-location" placeholder="San Francisco, CA" value="" oninput="updatePreview()">
+            <input type="text" id="res-location" placeholder="San Francisco, CA" oninput="updatePreview()">
           </details>
 
           <!-- Professional Summary -->
           <details>
             <summary>Professional Summary</summary>
             <label>Summary</label>
-            <textarea id="res-summary" placeholder="Write a summary..." oninput="updatePreview()"></textarea>
+            <textarea id="res-summary" placeholder="Write a professional summary..." oninput="updatePreview()"></textarea>
             <button class="btn ai-btn" onclick="aiOptimizeField('res-summary', 'professional summary')">✨ AI Polish Summary</button>
           </details>
 
@@ -99,16 +99,16 @@
           <details>
             <summary>Work Experience</summary>
             <label>Job Title</label>
-            <input type="text" id="res-exp-title" placeholder="Software Developer" value="" oninput="updatePreview()">
+            <input type="text" id="res-exp-title" placeholder="Software Developer" oninput="updatePreview()">
             
             <label>Company</label>
-            <input type="text" id="res-exp-company" placeholder="Tech Corp" value="" oninput="updatePreview()">
+            <input type="text" id="res-exp-company" placeholder="Tech Corp" oninput="updatePreview()">
             
             <label>Dates</label>
-            <input type="text" id="res-exp-dates" placeholder="2022 - Present" value="" oninput="updatePreview()">
+            <input type="text" id="res-exp-dates" placeholder="2022 - Present" oninput="updatePreview()">
             
             <label>Bullet Points / Responsibilities</label>
-            <textarea id="res-exp-desc" placeholder="Enter key responsibilities..." oninput="updatePreview()"></textarea>
+            <textarea id="res-exp-desc" placeholder="Enter key responsibilities (one per line)..." oninput="updatePreview()"></textarea>
             <button class="btn ai-btn" onclick="aiOptimizeField('res-exp-desc', 'resume experience bullet points')">✨ AI Enhance Experience</button>
           </details>
 
@@ -141,7 +141,7 @@
       <div class="form-container" style="max-width: 800px; margin: 0 auto;">
         <h2>Cover Letter Generator</h2>
         <label>Your Full Name</label>
-        <input type="text" id="cl-name" placeholder="Peepps" value="">
+        <input type="text" id="cl-name" placeholder="Peepps">
 
         <label>Target Job Title</label>
         <input type="text" id="cl-title" placeholder="e.g. Frontend Engineer">
