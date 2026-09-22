@@ -257,22 +257,51 @@ function saveCoverLetterLocal() {
   loadSavedDocs();
 }
 
+function deleteSavedResume() {
+  if (confirm('Are you sure you want to delete your saved resume?')) {
+    localStorage.removeItem('saved_resume');
+    loadSavedDocs();
+  }
+}
+
+function deleteSavedCoverLetter() {
+  if (confirm('Are you sure you want to delete your saved cover letter?')) {
+    localStorage.removeItem('saved_cover_letter');
+    loadSavedDocs();
+  }
+}
+
 function loadSavedDocs() {
   const res = localStorage.getItem('saved_resume');
   const letter = localStorage.getItem('saved_cover_letter');
 
   const resList = document.getElementById('saved-resumes-list');
   if (resList) {
-    resList.innerHTML = res 
-      ? `<button class="btn secondary" onclick="loadResumeState()">Load Saved Resume (${JSON.parse(res).personal.name})</button>` 
-      : 'No saved resumes found.';
+    if (res) {
+      const name = JSON.parse(res).personal?.name || 'Resume';
+      resList.innerHTML = `
+        <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+          <button class="btn secondary" onclick="loadResumeState()">Load Saved Resume (${name})</button>
+          <button class="btn" style="background-color: #ef4444; color: white;" onclick="deleteSavedResume()">Delete</button>
+        </div>
+      `;
+    } else {
+      resList.innerHTML = 'No saved resumes found.';
+    }
   }
 
   const letterList = document.getElementById('saved-letters-list');
   if (letterList) {
-    letterList.innerHTML = letter 
-      ? `<p>Cover Letter Saved (${letter.substring(0, 30)}...)</p>` 
-      : 'No saved cover letters found.';
+    if (letter) {
+      letterList.innerHTML = `
+        <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+          <span>Cover Letter Saved (${letter.substring(0, 30)}...)</span>
+          <button class="btn" style="background-color: #ef4444; color: white;" onclick="deleteSavedCoverLetter()">Delete</button>
+        </div>
+      `;
+    } else {
+      letterList.innerHTML = 'No saved cover letters found.';
+    }
   }
 }
 
