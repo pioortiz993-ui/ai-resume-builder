@@ -91,10 +91,11 @@ main {
 
 .hero-buttons {
   display: flex;
-  gap: 1rem; /* This ensures equal spacing between all buttons */
+  gap: 1rem;
   justify-content: center;
   margin-top: 1.5rem;
-  flex-wrap: wrap; /* Allows them to stack cleanly if the screen gets narrow */
+  margin-bottom: 2rem; /* This creates the necessary space above the feature cards */
+  flex-wrap: wrap;
 }
 
 .hero h1 { margin-bottom: 1rem; font-size: 2.2rem; }
