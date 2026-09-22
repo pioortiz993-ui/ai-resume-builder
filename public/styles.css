@@ -79,13 +79,21 @@ main {
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-.hero { 
-  text-align: center; 
-  padding: 3rem 1rem; 
-  background: var(--card-bg); 
-  border-radius: 8px; 
-  border: 1px solid var(--border-color); 
-  margin-bottom: 2rem; 
+.hero {
+  text-align: center;
+  padding: 3.5rem 2rem;
+  background: var(--card-bg, #ffffff);
+  border-radius: var(--radius-lg);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2.5rem; /* Increased this to give more space */
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.5rem; /* Added top margin to space it away from the paragraph text */
 }
 
 .hero h1 { margin-bottom: 1rem; font-size: 2.2rem; }
