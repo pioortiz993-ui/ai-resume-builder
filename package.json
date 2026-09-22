@@ -1,6 +1,7 @@
 {
   "name": "ai-resume-builder",
   "version": "1.0.0",
+  "type": "module",
   "description": "AD-ET 101 Final Project - AI Resume & Cover Letter Builder",
   "main": "api/generate.js",
   "scripts": {
