@@ -67,16 +67,17 @@
       z-index: 100;
     }
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
     nav {
       display: flex;
@@ -345,7 +346,6 @@
 
     /* PREVIEW */
     .preview-container {
-      sticky: top;
       position: sticky;
       top: 100px;
     }
@@ -604,9 +604,9 @@
           <details open>
             <summary>👤 Personal Information</summary>
             <label>Full Name</label>
-            <input type="text" id="res-name" placeholder="John Doe" oninput="updatePreview()">
+            <input type="text" id="res-name" placeholder="Peeppss" oninput="updatePreview()">
             <label>Email</label>
-            <input type="email" id="res-email" placeholder="john@example.com" oninput="updatePreview()">
+            <input type="email" id="res-email" placeholder="Peeppss@example.com" oninput="updatePreview()">
             <label>Phone</label>
             <input type="text" id="res-phone" placeholder="+1 (555) 123-4567" oninput="updatePreview()">
             <label>Location</label>
@@ -660,9 +660,9 @@
         <details open>
           <summary>Your Information</summary>
           <label>Full Name</label>
-          <input type="text" id="cl-name" placeholder="John Doe">
+          <input type="text" id="cl-name" placeholder="Peeppss">
           <label>Email</label>
-          <input type="email" id="cl-email" placeholder="john@example.com">
+          <input type="email" id="cl-email" placeholder="Peeppss@example.com">
           <label>Phone</label>
           <input type="text" id="cl-phone" placeholder="+1 (555) 123-4567">
         </details>
@@ -783,7 +783,7 @@
       const sheet = document.getElementById('resume-sheet');
       const template = document.getElementById('template-select').value;
       
-      const name = document.getElementById('res-name').value || 'Your Name';
+      const name = document.getElementById('res-name').value || 'Peeppss';
       const email = document.getElementById('res-email').value;
       const phone = document.getElementById('res-phone').value;
       const location = document.getElementById('res-location').value;
@@ -852,7 +852,7 @@
 
     // GENERATE COVER LETTER
     async function generateCoverLetter() {
-      const name = document.getElementById('cl-name').value || 'Applicant';
+      const name = document.getElementById('cl-name').value || 'Peeppss';
       const title = document.getElementById('cl-title').value;
       const company = document.getElementById('cl-company').value;
 
@@ -948,7 +948,7 @@ ANALYSIS:
         const doc = {
           id: Date.now(),
           type: 'Resume',
-          title: (document.getElementById('res-name').value || 'Resume') + ' Resume',
+          title: (document.getElementById('res-name').value || 'Peeppss') + ' Resume',
           date: new Date().toLocaleDateString(),
           data: { name: document.getElementById('res-name').value }
         };
