@@ -3,1024 +3,413 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CareerAI Builder - Professional Resume & Cover Letter</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabler-icons@latest/tabler-icons.min.css">
+  <title>Resume & Cover Letter Builder</title>
   <style>
+    /* --- THEME VARIABLES --- */
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1e40af;
-      --secondary: #64748b;
-      --accent: #7c3aed;
-      --success: #16a34a;
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface-alt: #f1f5f9;
-      --text: #0f172a;
-      --text-secondary: #475569;
-      --border: #e2e8f0;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    [data-theme="dark"] {
+      --bg-color: #f3f4f6;
+      --text-color: #1f2937;
+      --card-bg: #ffffff;
       --primary: #3b82f6;
-      --primary-dark: #1e3a8a;
-      --secondary: #94a3b8;
-      --accent: #a78bfa;
-      --success: #22c55e;
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface-alt: #334155;
-      --text: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --border: #334155;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+      --border: #e5e7eb;
+    }
+    
+    [data-theme="dark"] {
+      --bg-color: #111827;
+      --text-color: #f9fafb;
+      --card-bg: #1f2937;
+      --primary: #60a5fa;
+      --border: #374151;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    /* --- BASE STYLES --- */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.3s, color 0.3s;
-      line-height: 1.6;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
     }
-
-    /* NAVBAR */
-    .navbar {
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.2rem 2rem;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      margin-bottom: 20px;
     }
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* --- TABS --- */
+    .tabs {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-
-    nav {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .nav-btn {
-      background: transparent;
-      border: none;
-      padding: 0.6rem 1rem;
+    .tab-btn {
+      padding: 10px 20px;
       cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      border-radius: 6px;
-      transition: all 0.2s;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 4px;
+      font-weight: bold;
     }
-
-    .nav-btn:hover {
-      background: var(--surface-alt);
-      color: var(--primary);
-    }
-
-    .nav-btn.active {
+    .tab-btn.active {
       background: var(--primary);
       color: white;
+      border-color: var(--primary);
     }
 
-    /* MAIN */
-    main {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-      flex: 1;
-    }
-
-    .tab-content {
+    /* --- LAYOUT PANELS --- */
+    .panel {
       display: none;
-      animation: fadeIn 0.3s ease;
     }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* HERO */
-    .hero {
-      text-align: center;
-      padding: 4rem 2rem;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      color: white;
-      border-radius: 12px;
-      margin-bottom: 3rem;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      opacity: 0.95;
-      margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .hero-buttons {
+    .panel.active {
       display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
+      gap: 20px;
     }
-
-    /* FEATURES GRID */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+    @media (max-width: 768px) {
+      .panel.active { flex-direction: column; }
     }
-
-    .card {
-      background: var(--surface);
-      padding: 1.5rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      transition: all 0.3s;
-      box-shadow: var(--shadow);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--primary);
-    }
-
-    .card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.75rem;
-      color: var(--text);
-    }
-
-    .card p {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-    }
-
-    /* BUILDER LAYOUT */
-    .builder-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-
-    @media (max-width: 1024px) {
-      .builder-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* FORM CONTAINER */
-    .form-container {
-      background: var(--surface);
-      padding: 2rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      max-height: 800px;
-      overflow-y: auto;
-    }
-
-    .form-container h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: var(--text);
-    }
-
-    .template-selector {
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: var(--surface-alt);
+    
+    .form-section, .preview-section {
+      background: var(--card-bg);
+      padding: 20px;
       border-radius: 8px;
+      flex: 1;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
-    .template-selector label {
+    /* --- FORMS --- */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
       display: block;
+      margin-bottom: 5px;
       font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text);
+      font-size: 0.9em;
     }
-
-    select, input, textarea {
+    input, select, textarea {
       width: 100%;
-      padding: 0.75rem;
-      margin-top: 0.4rem;
-      margin-bottom: 1rem;
+      padding: 10px;
+      box-sizing: border-box;
+      background: var(--bg-color);
+      color: var(--text-color);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--surface-alt);
-      color: var(--text);
-      font-size: 0.95rem;
-      transition: all 0.2s;
+      border-radius: 4px;
+      font-family: inherit;
     }
-
-    select:focus, input:focus, textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    details {
-      border: 1px solid var(--border);
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      background: var(--surface-alt);
-    }
-
-    summary {
-      font-weight: 600;
-      cursor: pointer;
-      color: var(--primary);
-      user-select: none;
-    }
-
-    details[open] summary {
-      margin-bottom: 1rem;
-    }
-
-    /* BUTTONS */
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn.primary {
+    button.action-btn {
       background: var(--primary);
       color: white;
-    }
-
-    .btn.primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn.secondary {
-      background: var(--surface-alt);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn.secondary:hover {
-      background: var(--border);
-    }
-
-    .btn.success {
-      background: var(--success);
-      color: white;
-    }
-
-    .btn.ai-btn {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
-      color: white;
-    }
-
-    .btn.large {
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
       width: 100%;
-      padding: 1rem;
-      font-size: 1rem;
     }
+    button:hover { opacity: 0.9; }
 
-    .action-bar {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .action-bar .btn {
-      flex: 1;
-      min-width: 120px;
-    }
-
-    /* PREVIEW */
-    .preview-container {
-      sticky: top;
-      position: sticky;
-      top: 100px;
-    }
-
-    .resume-sheet {
-      background: white;
-      color: #0f172a;
-      padding: 2.5rem;
-      min-height: 900px;
+    /* --- TEMPLATE STYLES --- */
+    
+    #resume-preview {
+      padding: 20px;
+      min-height: 400px;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      box-shadow: var(--shadow-lg);
-      font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
-      line-height: 1.8;
+      border-radius: 4px;
+      background: #ffffff; /* Previews always keep a paper-like background */
     }
 
-    .resume-sheet h1 {
-      color: var(--primary);
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
+    /* Modern (Default) */
+    .template-modern {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #1f2937;
     }
-
-    .resume-sheet h3 {
-      color: var(--primary);
-      border-bottom: 2px solid #bfdbfe;
+    .template-modern h1 {
+      text-align: left;
+      color: #3b82f6;
+      border-bottom: 3px solid #3b82f6;
       padding-bottom: 0.5rem;
-      margin-top: 1.2rem;
-      margin-bottom: 0.8rem;
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      margin-top: 0;
     }
-
-    .resume-sheet ul {
-      margin-left: 1.5rem;
-      margin-bottom: 1rem;
+    .template-modern h3 {
+      text-align: left;
+      border-bottom: 2px solid #bfdbfe;
     }
-
-    .resume-sheet li {
-      margin-bottom: 0.5rem;
-    }
-
-    .resume-sheet p {
-      margin-bottom: 0.5rem;
-      color: #475569;
-    }
-
-    .skill-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
-    }
-
-    .skill-badge {
+    .template-modern .skill-badge {
       display: inline-block;
-      background: #dbeafe;
-      color: #1e40af;
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
+      background: #3b82f6;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin: 2px;
+      font-size: 0.9em;
+    }
+
+    /* Classic */
+    .template-classic {
+      font-family: 'Georgia', serif;
+      color: #000000;
+    }
+    .template-classic h1 {
+      text-align: center;
+      color: #000000;
+      border-bottom: none;
+      letter-spacing: 1px;
+      margin-top: 0;
+    }
+    .template-classic h3 {
+      text-align: center;
+      color: #333333;
+      border-bottom: 1px solid #000000;
+    }
+    .template-classic .skill-badge {
+      display: inline-block;
+      background: #eeeeee;
+      color: #000000;
+      border: 1px solid #cccccc;
+      padding: 4px 10px;
+      margin: 2px;
+      font-size: 0.9em;
+    }
+
+    /* Minimal */
+    .template-minimal {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #333333;
+    }
+    .template-minimal h1 {
+      text-align: left;
+      color: #222222;
+      font-weight: 300;
+      letter-spacing: 2px;
+      border-bottom: none;
+      margin-top: 0;
+    }
+    .template-minimal h3 {
+      text-align: left;
+      color: #555555;
+      border-bottom: none;
+      text-transform: capitalize;
+      font-weight: 600;
+      padding-bottom: 0;
+    }
+    .template-minimal .skill-badge {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #777777;
+      color: #333333;
+      border-radius: 4px;
+      padding: 4px 10px;
+      margin: 2px;
+      font-size: 0.9em;
+    }
+
+    /* --- TOAST NOTIFICATIONS --- */
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .toast {
+      background: var(--text-color);
+      color: var(--bg-color);
+      padding: 12px 24px;
+      border-radius: 4px;
+      margin-top: 10px;
+      display: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       font-weight: 500;
     }
-
-    /* LETTER OUTPUT */
-    .letter-output {
-      width: 100%;
-      height: 600px;
-      background: white;
-      color: #1e293b;
-      padding: 2rem;
-      font-family: 'Georgia', serif;
-      font-size: 1rem;
-      line-height: 1.8;
+    
+    /* --- LETTER OUTPUT --- */
+    #cl-output {
+      white-space: pre-wrap;
+      margin-top: 10px;
+      padding: 20px;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      resize: vertical;
-    }
-
-    /* RESULTS */
-    .results-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    @media (max-width: 768px) {
-      .results-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .score-display {
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin: 1rem 0;
-    }
-
-    .results-grid .card {
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: var(--primary);
-      color: white;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: var(--shadow-lg);
-      z-index: 9999;
-      animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(400px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    .toast.hidden {
-      display: none;
-    }
-
-    .toast.error {
-      background: #dc2626;
-    }
-
-    .toast.success {
-      background: var(--success);
-    }
-
-    /* LOADING STATE */
-    .loading {
-      position: relative;
-      pointer-events: none;
-      opacity: 0.7;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 1rem;
-      height: 1rem;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-      }
-
-      nav {
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .nav-btn {
-        width: 100%;
-        text-align: left;
-      }
-
-      .hero h1 {
-        font-size: 1.8rem;
-      }
-
-      .hero p {
-        font-size: 1rem;
-      }
-
-      main {
-        padding: 1rem;
-      }
+      background: var(--bg-color);
+      min-height: 250px;
+      border-radius: 4px;
+      font-family: 'Georgia', serif;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <h2>Document Builder</h2>
+      <button class="tab-btn" onclick="toggleTheme()">🌓 Toggle Theme</button>
+    </div>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="logo">✨ CareerAI Builder</div>
-    <nav>
-      <button class="nav-btn active" onclick="switchTab('home')">Home</button>
-      <button class="nav-btn" onclick="switchTab('resume')">Resume</button>
-      <button class="nav-btn" onclick="switchTab('cover-letter')">Cover Letter</button>
-      <button class="nav-btn" onclick="switchTab('job-analyzer')">Job Analyzer</button>
-      <button class="nav-btn" onclick="switchTab('my-docs')">My Documents</button>
-      <button class="nav-btn" id="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
-    </nav>
-  </header>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('resume', event)">Resume Builder</button>
+      <button class="tab-btn" onclick="switchTab('cover-letter', event)">Cover Letter</button>
+    </div>
 
-  <main>
-    <div id="toast" class="toast hidden"></div>
-
-    <!-- HOME TAB -->
-    <section id="tab-home" class="tab-content active">
-      <div class="hero">
-        <h1>🚀 Build Your Professional Career Profile</h1>
-        <p>Create ATS-optimized resumes, generate personalized cover letters, and match your skills to job requirements with AI assistance.</p>
-        <div class="hero-buttons">
-          <button class="btn primary" onclick="switchTab('resume')">📄 Resume Builder</button>
-          <button class="btn secondary" onclick="switchTab('cover-letter')">📝 Cover Letter</button>
-          <button class="btn secondary" onclick="switchTab('job-analyzer')">🎯 Job Analyzer</button>
+    <!-- Resume Builder Panel -->
+    <div id="resume" class="panel active">
+      <div class="form-section">
+        <h3>Resume Details</h3>
+        
+        <div class="form-group">
+          <label>Template Style</label>
+          <select id="template-select" onchange="updatePreview()">
+            <option value="template-modern">Modern</option>
+            <option value="template-classic">Classic</option>
+            <option value="template-minimal">Minimal</option>
+          </select>
         </div>
-      </div>
-
-      <div class="features-grid">
-        <div class="card">
-          <h3>⚡ Smart AI Rewriter</h3>
-          <p>Transform your work descriptions into impactful, achievement-focused bullet points that grab attention.</p>
-        </div>
-        <div class="card">
-          <h3>🎨 Professional Templates</h3>
-          <p>Modern, clean, and ATS-compliant resume designs that work on every applicant tracking system.</p>
-        </div>
-        <div class="card">
-          <h3>📩 Personalized Letters</h3>
-          <p>Generate custom cover letters that showcase how your skills match specific job requirements.</p>
-        </div>
-        <div class="card">
-          <h3>📊 Skill Gap Analysis</h3>
-          <p>Compare your qualifications against job postings to identify missing skills and improvement areas.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- RESUME BUILDER TAB -->
-    <section id="tab-resume" class="tab-content">
-      <div class="builder-layout">
-        <div class="form-container">
-          <h2>📄 Resume Builder</h2>
-
-          <div class="template-selector">
-            <label for="template-select">Template Style</label>
-            <select id="template-select" onchange="updatePreview()">
-              <option value="modern">Modern</option>
-              <option value="classic">Classic</option>
-              <option value="minimal">Minimal</option>
-            </select>
-          </div>
-
-          <details open>
-            <summary>👤 Personal Information</summary>
-            <label>Full Name</label>
-            <input type="text" id="res-name" placeholder="John Doe" oninput="updatePreview()">
-            <label>Email</label>
-            <input type="email" id="res-email" placeholder="john@example.com" oninput="updatePreview()">
-            <label>Phone</label>
-            <input type="text" id="res-phone" placeholder="+1 (555) 123-4567" oninput="updatePreview()">
-            <label>Location</label>
-            <input type="text" id="res-location" placeholder="San Francisco, CA" oninput="updatePreview()">
-          </details>
-
-          <details>
-            <summary>💼 Professional Summary</summary>
-            <textarea id="res-summary" placeholder="Write a compelling professional summary..." oninput="updatePreview()"></textarea>
-            <button class="btn ai-btn" onclick="aiOptimizeField('res-summary', 'professional summary')">✨ AI Polish</button>
-          </details>
-
-          <details>
-            <summary>🏢 Work Experience</summary>
-            <label>Job Title</label>
-            <input type="text" id="res-exp-title" placeholder="Senior Software Engineer" oninput="updatePreview()">
-            <label>Company</label>
-            <input type="text" id="res-exp-company" placeholder="Tech Company Inc." oninput="updatePreview()">
-            <label>Employment Dates</label>
-            <input type="text" id="res-exp-dates" placeholder="Jan 2022 - Present" oninput="updatePreview()">
-            <label>Key Achievements (one per line)</label>
-            <textarea id="res-exp-desc" placeholder="Led team of 5 engineers..." oninput="updatePreview()"></textarea>
-            <button class="btn ai-btn" onclick="aiOptimizeField('res-exp-desc', 'resume bullet points')">✨ Enhance Bullets</button>
-          </details>
-
-          <details>
-            <summary>🎯 Skills</summary>
-            <label>Professional Skills (comma-separated)</label>
-            <textarea id="res-skills" placeholder="JavaScript, React, Node.js, AWS, Docker" oninput="updatePreview()"></textarea>
-          </details>
-
-          <div class="action-bar">
-            <button class="btn success" onclick="saveDocument('resume')">💾 Save</button>
-            <button class="btn primary" onclick="downloadPDF()">📥 Export PDF</button>
-          </div>
-        </div>
-
-        <div class="preview-container">
-          <div id="resume-sheet" class="resume-sheet">
-            <!-- Dynamic content -->
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- COVER LETTER TAB -->
-    <section id="tab-cover-letter" class="tab-content">
-      <div class="form-container" style="max-width: 900px; margin: 0 auto;">
-        <h2>📝 Cover Letter Generator</h2>
-
-        <details open>
-          <summary>Your Information</summary>
+        
+        <div class="form-group">
           <label>Full Name</label>
-          <input type="text" id="cl-name" placeholder="John Doe">
-          <label>Email</label>
-          <input type="email" id="cl-email" placeholder="john@example.com">
-          <label>Phone</label>
-          <input type="text" id="cl-phone" placeholder="+1 (555) 123-4567">
-        </details>
+          <input type="text" id="res-name" placeholder="Peeppss" oninput="updatePreview()">
+        </div>
+        
+        <div class="form-group">
+          <label>Job Title</label>
+          <input type="text" id="res-title" placeholder="Software Engineer" oninput="updatePreview()">
+        </div>
+        
+        <div class="form-group">
+          <label>Skills (comma separated)</label>
+          <input type="text" id="res-skills" placeholder="Python, JavaScript, SQL" oninput="updatePreview()">
+        </div>
+      </div>
+      
+      <div class="preview-section">
+        <h3>Live Preview</h3>
+        <div id="resume-preview" class="template-modern">
+          <h1 id="prev-name">Peeppss</h1>
+          <p id="prev-title">Software Engineer</p>
+          <h3>Core Skills</h3>
+          <div id="prev-skills">
+            <span class="skill-badge">Python</span>
+            <span class="skill-badge">JavaScript</span>
+            <span class="skill-badge">SQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <details open>
-          <summary>Position Details</summary>
-          <label>Target Job Title</label>
-          <input type="text" id="cl-title" placeholder="Senior Developer">
+    <!-- Cover Letter Panel -->
+    <div id="cover-letter" class="panel">
+      <div class="form-section">
+        <h3>Cover Letter Details</h3>
+        
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="cl-name" placeholder="Peeppss">
+        </div>
+        
+        <div class="form-group">
           <label>Target Company</label>
-          <input type="text" id="cl-company" placeholder="Google">
-          <label>Job Description (paste full job posting)</label>
-          <textarea id="cl-job-desc" placeholder="Paste the complete job description here..." style="min-height: 150px;"></textarea>
-        </details>
-
-        <button class="btn ai-btn large" onclick="generateCoverLetter()">✨ Generate Cover Letter</button>
-
-        <div style="margin-top: 2rem;">
-          <label style="display: block; font-weight: 600; margin-bottom: 1rem;">Generated Letter</label>
-          <textarea id="cl-output" class="letter-output" placeholder="Your AI-generated cover letter will appear here..."></textarea>
+          <input type="text" id="cl-company" placeholder="Tech Innovations Inc.">
         </div>
-
-        <div class="action-bar">
-          <button class="btn success" onclick="saveDocument('cover-letter')">💾 Save Letter</button>
-        </div>
+        
+        <button class="action-btn" onclick="generateLetter()">Generate Cover Letter</button>
       </div>
-    </section>
-
-    <!-- JOB ANALYZER TAB -->
-    <section id="tab-job-analyzer" class="tab-content">
-      <div class="form-container" style="max-width: 900px; margin: 0 auto;">
-        <h2>🎯 Job Match Analyzer</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Compare your qualifications against job requirements to get a compatibility score.</p>
-
-        <details open>
-          <summary>Job Description</summary>
-          <textarea id="ja-job-desc" style="min-height: 150px;" placeholder="Paste the complete job posting here..."></textarea>
-        </details>
-
-        <details open>
-          <summary>Your Resume/Skills</summary>
-          <textarea id="ja-resume-text" style="min-height: 150px;" placeholder="Paste your resume or skills summary here..."></textarea>
-        </details>
-
-        <button class="btn ai-btn large" onclick="analyzeJob()">🔍 Analyze Match</button>
-
-        <div id="ja-results" class="results-grid hidden">
-          <div class="card">
-            <h3>📊 Match Score</h3>
-            <div class="score-display" id="ja-score">—</div>
-            <p style="color: var(--text-secondary);">Overall qualification match</p>
-          </div>
-          <div class="card">
-            <h3>📋 Analysis</h3>
-            <div id="ja-analysis-text" style="white-space: pre-wrap; font-size: 0.9rem;"></div>
-          </div>
-        </div>
+      
+      <div class="preview-section">
+        <h3>Generated Letter</h3>
+        <div id="cl-output">Your generated cover letter will appear here...</div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- MY DOCUMENTS TAB -->
-    <section id="tab-my-docs" class="tab-content">
-      <div style="max-width: 1000px; margin: 0 auto;">
-        <h2>📚 Saved Documents</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Your locally saved resumes and cover letters.</p>
-        <div id="docs-list" class="features-grid">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-    </section>
-  </main>
+  <!-- Toast Container -->
+  <div id="toast-container">
+    <div id="toast" class="toast">Action successful!</div>
+  </div>
 
   <script>
-    // TAB NAVIGATION
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        if (btn.id !== 'theme-toggle-btn') btn.classList.remove('active');
-      });
-
-      const tab = document.getElementById(`tab-${tabName}`);
-      if (tab) tab.classList.add('active');
-
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        if (btn.getAttribute('onclick')?.includes(tabName)) {
-          btn.classList.add('active');
-        }
-      });
-
-      if (tabName === 'my-docs') loadSavedDocs();
-      if (tabName === 'resume') updatePreview();
-      
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // THEME TOGGLE
+    // --- THEME TOGGLE LOGIC ---
     function toggleTheme() {
-      const theme = document.documentElement.getAttribute('data-theme');
-      const newTheme = theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      updateThemeButton(newTheme);
+      const body = document.documentElement;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      
+      body.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      showToast(next === 'dark' ? 'Dark mode enabled' : 'Light mode enabled');
     }
 
-    function updateThemeButton(theme) {
-      document.getElementById('theme-toggle-btn').textContent = theme === 'dark' ? '☀️' : '🌙';
+    // Load saved theme on initialization
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
     }
 
-    function initTheme() {
-      const saved = localStorage.getItem('theme');
-      const system = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = saved || (system ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
-      updateThemeButton(theme);
+    // --- TAB SWITCHING LOGIC ---
+    function switchTab(tabId, event) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
     }
 
-    // RESUME PREVIEW
+    // --- RESUME PREVIEW LOGIC ---
     function updatePreview() {
-      const sheet = document.getElementById('resume-sheet');
+      // Get Template
       const template = document.getElementById('template-select').value;
+      const preview = document.getElementById('resume-preview');
+      preview.className = template;
       
-      const name = document.getElementById('res-name').value || 'Your Name';
-      const email = document.getElementById('res-email').value;
-      const phone = document.getElementById('res-phone').value;
-      const location = document.getElementById('res-location').value;
-      const summary = document.getElementById('res-summary').value;
-      const expTitle = document.getElementById('res-exp-title').value;
-      const expCompany = document.getElementById('res-exp-company').value;
-      const expDates = document.getElementById('res-exp-dates').value;
-      const expDesc = document.getElementById('res-exp-desc').value;
-      const skills = document.getElementById('res-skills').value;
-
-      sheet.className = `resume-sheet template-${template}`;
-
-      const contact = [email, phone, location].filter(x => x).join(' • ');
-      const bullets = expDesc ? expDesc.split('\n').filter(x => x.trim()).map(b => `<li>${b}</li>`).join('') : '';
-      const skillBadges = skills ? skills.split(',').filter(x => x.trim()).map(s => `<span class="skill-badge">${s.trim()}</span>`).join('') : '';
-
-      sheet.innerHTML = `
-        <h1>${name}</h1>
-        ${contact ? `<p style="text-align:center; margin-bottom:1.5rem;">${contact}</p>` : ''}
+      // Update Text Fields (Uses placeholder if input is empty)
+      const nameInput = document.getElementById('res-name').value;
+      const titleInput = document.getElementById('res-title').value;
+      
+      document.getElementById('prev-name').innerText = nameInput || 'Peeppss';
+      document.getElementById('prev-title').innerText = titleInput || 'Software Engineer';
+      
+      // Update Skills
+      const skillsInput = document.getElementById('res-skills').value;
+      const skillsToParse = skillsInput || 'Python, JavaScript, SQL';
+      
+      const skillsHtml = skillsToParse.split(',')
+        .filter(s => s.trim() !== '') // Remove empty badges
+        .map(s => `<span class="skill-badge">${s.trim()}</span>`)
+        .join('');
         
-        ${summary ? `<h3>Professional Summary</h3><p>${summary}</p>` : ''}
-        
-        ${expTitle || expCompany ? `
-          <h3>Experience</h3>
-          <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-            <div><strong>${expTitle}</strong>${expTitle && expCompany ? ' at ' : ''}<strong>${expCompany}</strong></div>
-            <span>${expDates}</span>
-          </div>
-          ${bullets ? `<ul>${bullets}</ul>` : ''}
-        ` : ''}
-
-        ${skills ? `<h3>Skills</h3><div class="skill-badges">${skillBadges}</div>` : ''}
-      `;
+      document.getElementById('prev-skills').innerHTML = skillsHtml;
     }
 
-    // AI OPTIMIZATION
-    async function aiOptimizeField(elementId, fieldType) {
-      const field = document.getElementById(elementId);
-      if (!field.value.trim()) {
-        showToast('Please enter some text first', 'error');
-        return;
-      }
+    // --- COVER LETTER LOGIC ---
+    function generateLetter() {
+      const name = document.getElementById('cl-name').value || 'Peeppss';
+      const company = document.getElementById('cl-company').value || 'Tech Innovations Inc.';
       
-      const btn = event.target;
-      btn.disabled = true;
-      const originalText = btn.textContent;
-      btn.innerHTML = '<span class="spinner"></span> Processing...';
-
-      showToast('✨ AI is enhancing your content...');
+      const letter = `Dear Hiring Manager at ${company},\n\nI am writing to express my enthusiastic interest in joining your team. Given my background and technical expertise, I am confident I would be a highly valuable addition to ${company}.\n\nThank you for considering my application.\n\nSincerely,\n${name}`;
       
-      // Simulate AI processing
-      setTimeout(() => {
-        const enhancements = {
-          'professional summary': 'Innovative professional with 8+ years of experience in digital transformation...',
-          'resume bullet points': '• Led cross-functional team of 5+ engineers to deliver product on schedule\n• Optimized system performance by 40%, reducing load times from 3s to 1.8s\n• Implemented CI/CD pipeline reducing deployment time by 60%',
-          'resume experience bullet points': '• Spearheaded development of microservices architecture\n• Mentored junior developers and conducted technical interviews\n• Contributed to open-source projects with 2K+ GitHub stars'
-        };
-
-        field.value = enhancements[fieldType] || field.value;
-        btn.disabled = false;
-        btn.textContent = originalText;
-        updatePreview();
-        showToast('✅ Content enhanced successfully!', 'success');
-      }, 1500);
+      document.getElementById('cl-output').innerText = letter;
+      showToast('Cover letter generated successfully!');
     }
 
-    // GENERATE COVER LETTER
-    async function generateCoverLetter() {
-      const name = document.getElementById('cl-name').value || 'Applicant';
-      const title = document.getElementById('cl-title').value;
-      const company = document.getElementById('cl-company').value;
-
-      if (!title || !company) {
-        showToast('Please fill in Job Title and Company', 'error');
-        return;
-      }
-
-      const btn = event.target;
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Generating...';
-
-      showToast('📝 Generating your cover letter...');
-
-      setTimeout(() => {
-        const letter = `Dear Hiring Manager,
-
-I am writing to express my strong interest in the ${title} position at ${company}. With my proven track record in delivering exceptional results and my passion for innovation, I am confident I would be a valuable addition to your team.
-
-Throughout my career, I have consistently demonstrated the ability to take on complex challenges and drive meaningful impact. My experience in [relevant field] has equipped me with the skills and mindset needed to excel in this role. I am particularly drawn to ${company}'s commitment to [company values/mission], which aligns perfectly with my professional goals.
-
-In my current/previous role, I have:
-• Achieved measurable results through strategic planning and execution
-• Collaborated effectively with cross-functional teams to deliver high-quality solutions
-• Continuously sought opportunities for professional growth and innovation
-
-I am excited about the possibility of bringing my expertise and enthusiasm to ${company}. I would welcome the opportunity to discuss how my skills and experience can contribute to your team's success.
-
-Thank you for considering my application. I look forward to the opportunity to speak with you further.
-
-Sincerely,
-${name}`;
-
-        document.getElementById('cl-output').value = letter;
-        btn.disabled = false;
-        btn.innerHTML = '✨ Generate Cover Letter';
-        showToast('✅ Cover letter generated!', 'success');
-      }, 1500);
-    }
-
-    // JOB ANALYZER
-    async function analyzeJob() {
-      const jobDesc = document.getElementById('ja-job-desc').value;
-      const resumeText = document.getElementById('ja-resume-text').value;
-
-      if (!jobDesc || !resumeText) {
-        showToast('Please fill in both fields', 'error');
-        return;
-      }
-
-      const btn = event.target;
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Analyzing...';
-
-      showToast('🔍 Analyzing your match...');
-
-      setTimeout(() => {
-        const score = Math.floor(Math.random() * 30 + 65); // 65-95%
-        const analysis = `MATCH SCORE: ${score}%
-
-ANALYSIS:
-✅ Strengths:
-• Python/JavaScript programming experience matches requirements
-• 5+ years experience in full-stack development
-• Cloud platform experience (AWS/GCP)
-
-⚠️ Skills Gap:
-• Missing: Kubernetes/Docker orchestration (critical)
-• Limited experience with Microservices architecture
-• No mention of CI/CD pipeline experience
-
-📈 Recommendations:
-1. Highlight any containerization or deployment automation experience
-2. Consider taking a quick course on Docker/Kubernetes (available on Udemy)
-3. Emphasize any relevant DevOps tools you've used
-4. Study common architectural patterns before interview`;
-
-        document.getElementById('ja-results').classList.remove('hidden');
-        document.getElementById('ja-score').textContent = score + '%';
-        document.getElementById('ja-analysis-text').textContent = analysis;
-
-        btn.disabled = false;
-        btn.innerHTML = '🔍 Analyze Match';
-        showToast('✅ Analysis complete!', 'success');
-      }, 1500);
-    }
-
-    // DOCUMENT MANAGEMENT
-    function saveDocument(type) {
-      const docs = JSON.parse(localStorage.getItem('saved_docs') || '[]');
-      
-      if (type === 'resume') {
-        const doc = {
-          id: Date.now(),
-          type: 'Resume',
-          title: (document.getElementById('res-name').value || 'Resume') + ' Resume',
-          date: new Date().toLocaleDateString(),
-          data: { name: document.getElementById('res-name').value }
-        };
-        docs.push(doc);
-      } else {
-        const doc = {
-          id: Date.now(),
-          type: 'Cover Letter',
-          title: document.getElementById('cl-title').value + ' @ ' + document.getElementById('cl-company').value,
-          date: new Date().toLocaleDateString(),
-          content: document.getElementById('cl-output').value
-        };
-        docs.push(doc);
-      }
-
-      localStorage.setItem('saved_docs', JSON.stringify(docs));
-      showToast('✅ Document saved!', 'success');
-    }
-
-    function loadSavedDocs() {
-      const docsList = document.getElementById('docs-list');
-      const docs = JSON.parse(localStorage.getItem('saved_docs') || '[]');
-
-      if (docs.length === 0) {
-        docsList.innerHTML = '<p style="grid-column:1/-1; color:var(--text-secondary);">No saved documents yet. Create one to get started!</p>';
-        return;
-      }
-
-      docsList.innerHTML = docs.map(doc => `
-        <div class="card">
-          <h3>${doc.type === 'Resume' ? '📄' : '📝'} ${doc.title}</h3>
-          <p style="color:var(--text-secondary); margin:0.5rem 0;">📅 ${doc.date}</p>
-          <button class="btn secondary" style="margin-top:1rem;" onclick="deleteDoc(${doc.id})">🗑️ Delete</button>
-        </div>
-      `).join('');
-    }
-
-    function deleteDoc(id) {
-      let docs = JSON.parse(localStorage.getItem('saved_docs') || '[]');
-      docs = docs.filter(d => d.id !== id);
-      localStorage.setItem('saved_docs', JSON.stringify(docs));
-      loadSavedDocs();
-      showToast('✅ Document deleted', 'success');
-    }
-
-    // PDF EXPORT
-    function downloadPDF() {
-      const element = document.getElementById('resume-sheet');
-      const opt = {
-        margin: 0.5,
-        filename: 'Resume.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
-      showToast('✅ PDF downloaded!', 'success');
-    }
-
-    // TOAST NOTIFICATIONS
-    function showToast(msg, type = 'info') {
+    // --- TOAST NOTIFICATION LOGIC ---
+    let toastTimeout;
+    function showToast(msg) {
       const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.className = `toast ${type}`;
-      setTimeout(() => toast.classList.add('hidden'), 3000);
+      toast.innerText = msg;
+      toast.style.display = 'block';
+      
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => { 
+        toast.style.display = 'none'; 
+      }, 3000);
     }
 
-    // INIT
-    window.onload = () => {
-      initTheme();
-      updatePreview();
-    };
+    // Initialize preview on page load
+    updatePreview();
   </script>
 </body>
 </html>
